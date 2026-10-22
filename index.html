@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>PDF Book Viewer</title>
+<link rel="stylesheet" href="styles.css" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='80'>📖</text></svg>" />
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="logo">📖</span>
+    <span class="title">PDF Book Viewer</span>
+  </div>
+
+  <div class="openers">
+    <label class="btn btn-primary" for="fileInput" title="Open a PDF from this machine">
+      <span class="ico">📁</span> Open file…
+      <input id="fileInput" type="file" accept="application/pdf,.pdf" hidden />
+    </label>
+
+    <div class="url-group">
+      <input id="urlInput" type="url" spellcheck="false" autocomplete="off"
+             placeholder="https://…/book.pdf  (hosted file URL)" />
+      <button id="openUrlBtn" class="btn" type="button">Open URL</button>
+    </div>
+
+    <button id="shareBtn" class="btn" type="button" disabled
+            title="Copy a link that opens this hosted PDF for someone else">
+      <span class="ico">🔗</span> Share
+    </button>
+
+    <details id="settingsPanel" class="settings">
+      <summary class="btn" title="Network / sharing settings">⚙</summary>
+      <div class="settings-body">
+        <label class="row">
+          <input type="checkbox" id="proxyEnabled" checked />
+          <span>Fallback through a CORS proxy when the host blocks cross-origin reads</span>
+        </label>
+        <label class="row col">
+          <span>Proxy template (<code>{url}</code> = encoded target URL)</span>
+          <input id="proxyTemplate" type="text" spellcheck="false"
+                 value="https://api.codetabs.com/v1/proxy?quest={url}" />
+        </label>
+        <p class="hint">
+          Direct opening works for hosts that send <code>Access-Control-Allow-Origin: *</code>,
+          e.g. <b>raw.githubusercontent.com</b>, <b>cdn.jsdelivr.net</b>, GitHub Pages,
+          most CDNs, and your own server. Anything else needs the proxy or a permissive host.
+        </p>
+      </div>
+    </details>
+  </div>
+</header>
+
+<main class="stage" id="stage">
+  <div class="empty" id="emptyState">
+    <div class="empty-card">
+      <div class="empty-ico">📚</div>
+      <h1>Open a PDF to start reading</h1>
+      <p>Drop a file anywhere on this page,<br />use <b>Open file…</b>, or paste a hosted URL above.</p>
+      <p class="hint">Arrow keys / clicking the side arrows / dragging a page turns the page.</p>
+    </div>
+  </div>
+
+  <div class="book" id="book" hidden>
+    <div class="page page-left"  id="pageLeft"></div>
+    <div class="page page-right" id="pageRight"></div>
+    <div class="flipper" id="flipper" hidden>
+      <div class="face face-front" id="faceFront"></div>
+      <div class="face face-back"  id="faceBack"></div>
+    </div>
+    <div class="gutter" id="gutter"></div>
+  </div>
+
+  <button class="edge edge-prev" id="edgePrev" type="button" aria-label="Previous page" hidden>‹</button>
+  <button class="edge edge-next" id="edgeNext" type="button" aria-label="Next page" hidden>›</button>
+
+  <div class="drop-veil" id="dropVeil" hidden><div>Drop the PDF to open it</div></div>
+</main>
+
+<footer class="statusbar">
+  <div class="nav">
+    <button class="btn icon" id="firstBtn" type="button" title="First page (Home)">⏮</button>
+    <button class="btn icon" id="prevBtn" type="button" title="Previous page (←)">◀</button>
+    <span class="indicator" id="indicator">—</span>
+    <button class="btn icon" id="nextBtn" type="button" title="Next page (→)">▶</button>
+    <button class="btn icon" id="lastBtn" type="button" title="Last page (End)">⏭</button>
+    <span class="page-jump">
+      <input id="pageInput" type="number" min="1" value="1" title="Jump to page" />
+      <span id="pageTotal">/ 0</span>
+    </span>
+  </div>
+
+  <div class="meta" id="meta">No document loaded</div>
+
+  <div class="zoom">
+    <button class="btn icon" id="zoomOut" type="button" title="Zoom out (−)">−</button>
+    <button class="btn" id="zoomReset" type="button" title="Fit to window (0)">Fit</button>
+    <button class="btn icon" id="zoomIn" type="button" title="Zoom in (+)">+</button>
+    <button class="btn" id="layoutBtn" type="button" title="Toggle single page / two-page spread">Spread</button>
+  </div>
+</footer>
+
+<div class="toast" id="toast" hidden></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+# OS noise
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# local experiments / test artifacts
+*.log
+node_modules/
